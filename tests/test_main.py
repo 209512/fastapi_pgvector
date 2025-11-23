@@ -2,6 +2,8 @@ import pytest
 from fastapi.testclient import TestClient
 from database import init_db
 
+from main import app
+
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_database():
@@ -9,8 +11,6 @@ def setup_database():
     init_db()
     yield
 
-
-from main import app
 
 client = TestClient(app)
 
