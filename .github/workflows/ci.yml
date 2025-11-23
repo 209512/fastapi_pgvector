@@ -17,6 +17,7 @@ jobs:
           POSTGRES_DB: dream_db_test
           POSTGRES_USER: user
           POSTGRES_PASSWORD: password
+          POSTGRES_HOST_AUTH_METHOD: trust
         ports:
           - 5432:5432
         options: >-
@@ -52,7 +53,10 @@ jobs:
           DB_USER: user
           DB_PASSWORD: password
         run: uv run pytest -v -s
-        continue-on-error: true
+
+      - if: ${{ failure() }}
+        name: Show PostgreSQL logs
+        run: docker logs $(docker ps -q --filter ancestor=pgvector/pgvector:pg18)
 
   build:
     runs-on: ubuntu-latest
