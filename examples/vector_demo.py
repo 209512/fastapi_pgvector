@@ -1,7 +1,7 @@
 """벡터 생성 데모 스크립트
 
 사용법:
-    python examples/vector_demo.py
+    프로젝트 루트에서: python -m examples.vector_demo
 """
 
 from vectorizer import get_vector

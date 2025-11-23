@@ -1,5 +1,3 @@
-# vectorizer.py
-
 from sentence_transformers import SentenceTransformer
 
 # 모델을 한 번만 로드하여 재사용
