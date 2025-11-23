@@ -7,12 +7,14 @@ from contextlib import asynccontextmanager
 from database import get_db_connection, init_db
 from vectorizer import get_vector
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # 시작 시 데이터베이스 초기화
     init_db()
     yield
     # 종료 시 정리 작업 (필요시)
+
 
 app = FastAPI(lifespan=lifespan)
 
@@ -25,10 +27,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 class DreamRecord(BaseModel):
     dream_text: str
     dream_feeling: str
     user_id: int
+
 
 @app.post("/add_dream/")
 async def add_dream_record(dream: DreamRecord):
@@ -40,7 +44,7 @@ async def add_dream_record(dream: DreamRecord):
         embedding = get_vector(combined_text)
 
         # 벡터를 PostgreSQL 형식으로 변환
-        vector_str = '[' + ','.join(map(str, embedding)) + ']'
+        vector_str = "[" + ",".join(map(str, embedding)) + "]"
 
         sql = "INSERT INTO dream_records (dream_text, dream_vector, user_id) VALUES (%s, %s, %s)"
         cur.execute(sql, (combined_text, vector_str, dream.user_id))
@@ -53,6 +57,7 @@ async def add_dream_record(dream: DreamRecord):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @app.get("/search_dreams/")
 async def search_dreams(query: str, user_id: int = None):
     if not query:
@@ -63,7 +68,7 @@ async def search_dreams(query: str, user_id: int = None):
         cur = conn.cursor()
 
         query_embedding = get_vector(query)
-        vector_str = '[' + ','.join(map(str, query_embedding)) + ']'
+        vector_str = "[" + ",".join(map(str, query_embedding)) + "]"
 
         if user_id is not None:
             sql = """
@@ -87,13 +92,12 @@ async def search_dreams(query: str, user_id: int = None):
         cur.close()
         conn.close()
 
-        search_results = [
-            {"dream_text": row[0], "distance": row[1]} for row in results
-        ]
+        search_results = [{"dream_text": row[0], "distance": row[1]} for row in results]
 
         return {"results": search_results}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 app.mount("/", StaticFiles(directory=".", html=True), name="static")

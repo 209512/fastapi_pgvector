@@ -3,12 +3,11 @@
 사용법:
     python examples/vector_demo.py
 """
+
 from vectorizer import get_vector
 
 # 검색하고 싶은 새로운 꿈 텍스트를 입력하세요.
-texts_to_encode = [
-    '새로운 친구를 만나는 꿈을 꿨다. 설렜다.'
-]
+texts_to_encode = ["새로운 친구를 만나는 꿈을 꿨다. 설렜다."]
 
 if __name__ == "__main__":
     print("--- 생성된 벡터 (384차원) ---")
