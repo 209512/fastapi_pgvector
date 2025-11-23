@@ -1,4 +1,15 @@
+import pytest
 from fastapi.testclient import TestClient
+from database import init_db
+
+
+@pytest.fixture(scope="session", autouse=True)
+def setup_database():
+    """테스트 세션 시작 시 데이터베이스 초기화"""
+    init_db()
+    yield
+
+
 from main import app
 
 client = TestClient(app)
