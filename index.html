@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>나의 꿈 일기 ✨</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            color: #555;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            font-family: inherit;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            width: 100%;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .results-list {
+            list-style: none;
+        }
+
+        .result-item {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .result-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .dream-text {
+            color: #333;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        .distance {
+            color: #667eea;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 2rem;
+            font-style: italic;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #667eea;
+            margin-top: 1rem;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .success-message.active {
+            display: block;
+        }
+
+        .icon {
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✨ 나의 꿈 일기 ✨</h1>
+
+        <div class="card">
+            <h2><span class="icon">📝</span> 새 꿈 기록하기</h2>
+            <div class="success-message" id="success-message">
+                꿈이 성공적으로 기록되었습니다! 🎉
+            </div>
+            <form id="add-form">
+                <div class="form-group">
+                    <label for="dream-user-id">사용자 ID</label>
+                    <input type="number" id="dream-user-id" placeholder="예: 1" required>
+                </div>
+                <div class="form-group">
+                    <label for="dream-text">꿈 내용</label>
+                    <textarea id="dream-text" placeholder="어떤 꿈을 꾸셨나요?" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="dream-feeling">느낀 감정</label>
+                    <input type="text" id="dream-feeling" placeholder="예: 행복했다, 불안했다" required>
+                </div>
+                <button type="submit">기록하기</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">🔍</span> 유사한 꿈 찾기</h2>
+            <form id="search-form">
+                <div class="form-group">
+                    <label for="search-query">검색어</label>
+                    <input type="text" id="search-query" placeholder="궁금한 검색어를 입력하세요" required>
+                </div>
+                <div class="form-group">
+                    <label for="search-user-id">사용자 ID (선택사항)</label>
+                    <input type="number" id="search-user-id" placeholder="비워두면 전체 검색">
+                </div>
+                <button type="submit">찾기</button>
+            </form>
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>검색 중...</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📊</span> 검색 결과</h2>
+            <ul class="results-list" id="results-list">
+                <li class="empty-state">검색 결과가 여기에 표시됩니다</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8000';
+
+        document.getElementById('add-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const dreamUserId = document.getElementById('dream-user-id').value;
+            const dreamText = document.getElementById('dream-text').value;
+            const dreamFeeling = document.getElementById('dream-feeling').value;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/add_dream/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        dream_text: dreamText,
+                        dream_feeling: dreamFeeling,
+                        user_id: parseInt(dreamUserId)
+                    })
+                });
+                const result = await response.json();
+
+                // 성공 메시지 표시
+                const successMsg = document.getElementById('success-message');
+                successMsg.classList.add('active');
+                setTimeout(() => successMsg.classList.remove('active'), 3000);
+
+                // 폼 초기화
+                document.getElementById('dream-text').value = '';
+                document.getElementById('dream-feeling').value = '';
+                document.getElementById('dream-user-id').value = '';
+            } catch (error) {
+                console.error('꿈 기록 오류:', error);
+                alert('꿈 기록에 실패했습니다.');
+            }
+        });
+
+        document.getElementById('search-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const searchQuery = document.getElementById('search-query').value;
+            const searchUserId = document.getElementById('search-user-id').value;
+            const loading = document.getElementById('loading');
+            const resultsList = document.getElementById('results-list');
+
+            let url = `${API_BASE_URL}/search_dreams/?query=${encodeURIComponent(searchQuery)}`;
+            if (searchUserId) {
+                url += `&user_id=${searchUserId}`;
+            }
+
+            loading.classList.add('active');
+            resultsList.innerHTML = '';
+
+            try {
+                const response = await fetch(url);
+                const result = await response.json();
+
+                loading.classList.remove('active');
+
+                if (response.ok && result.results && result.results.length > 0) {
+                    result.results.forEach(item => {
+                        const li = document.createElement('li');
+                        li.className = 'result-item';
+                        li.innerHTML = `
+                            <div class="dream-text">${item.dream_text}</div>
+                            <div class="distance">유사도: ${(1 - item.distance).toFixed(4)} (거리: ${item.distance.toFixed(4)})</div>
+                        `;
+                        resultsList.appendChild(li);
+                    });
+                } else {
+                    resultsList.innerHTML = '<li class="empty-state">결과가 없습니다 😢</li>';
+                }
+            } catch (error) {
+                loading.classList.remove('active');
+                console.error('꿈 검색 오류:', error);
+                resultsList.innerHTML = '<li class="empty-state">검색에 실패했습니다</li>';
+            }
+        });
+    </script>
+</body>
+</html>
